@@ -108,13 +108,11 @@
                 // Show correct content area
                 var tabNum = 0;
                 if (hash != '') {
-                    var matches = hash.match(new RegExp(respTabsId + "([0-9]+)"));
-                    if (matches !== null && matches.length === 2) {
-                        tabNum = parseInt(matches[1], 10) - 1;
-                        if (tabNum > count) {
-                            tabNum = 0;
+                    $($respTabs.find('.resp-tab-item.' + options.tabidentify + ' a')).each(function(a,b) {
+                        if ( hash.indexOf($(b).attr('href')) !== -1 ) {
+                            tabNum = a;
                         }
-                    }
+                    });
                 }
 
                 //Active correct tab
@@ -170,7 +168,6 @@
 
                             $respTabs.find('.resp-tab-content[aria-labelledby = ' + $tabAria + '].' + options.tabidentify).slideDown().addClass('resp-tab-content-active');
                         } else {
-                            console.log('here');
                             $respTabs.find('.resp-tab-active.' + options.tabidentify).removeClass('resp-tab-active').css({
                                 'background-color': options.inactive_bg,
                                 'border-color': 'none'
@@ -190,23 +187,7 @@
 
                         //Update Browser History
                         if (historyApi) {
-                            var currentHash = window.location.hash;
-                            var tabAriaParts = $tabAria.split('tab_item-');
-                            // var newHash = respTabsId + (parseInt($tabAria.substring(9), 10) + 1).toString();
-                            var newHash = respTabsId + (parseInt(tabAriaParts[1], 10) + 1).toString();
-                            if (currentHash != "") {
-                                var re = new RegExp(respTabsId + "[0-9]+");
-                                if (currentHash.match(re) != null) {
-                                    newHash = currentHash.replace(re, newHash);
-                                }
-                                else {
-                                    newHash = currentHash + "|" + newHash;
-                                }
-                            }
-                            else {
-                                newHash = '#' + newHash;
-                            }
-
+                            var newHash = $currentTab.children('a').attr('href');
                             history.replaceState(null, null, newHash);
                         }
                     });
